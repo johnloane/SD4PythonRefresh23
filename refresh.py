@@ -348,6 +348,93 @@ print(x[2:])
 x = np.arange(18).reshape(3, 2, 3)
 print(x[1, ...])
 
+print(x[:, 0, 0])
+
+print(x[1, :2, :3:2])
+
+comparison_operator = x > 5
+print(comparison_operator)
+print(x[comparison_operator])
+print(x.max())
+print(x.min())
+
+# Manipulating array shapes
+x = np.arange(9).reshape(3, 3)
+print(x)
+ravelled_array = x.ravel()
+print(ravelled_array)
+
+flattened_array = x.flatten()
+print(flattened_array)
+
+#ravelled_array[2] = 1000000
+#print(x)
+
+flattened_array[2] = 999
+print(x)
+
+y = np.arange(9)
+y.shape = [3, 3]
+print(y)
+print(y.transpose())
+print(y.T)
+
+print(np.resize(y, (6, 6)))
+
+print(np.ones((3, 2), dtype=int))
+print(np.eye(3, dtype=int))
+
+print(np.random.rand(4, 4))
+
+mat_a = np.array([0, 3, 5, 5, 5, 2]).reshape(2, 3)
+mat_b = np.array([3, 4, 3, -2, 4, -2]).reshape(3, 2)
+
+# TODO See why * does not work with arrays
+#print(mat_a * mat_b)
+
+product = np.matmul(mat_a, mat_b)
+print(product)
+
+print(mat_a @ mat_b)
+
+# Stacking
+x = np.arange(4).reshape(2, 2)
+y = np.arange(4, 8).reshape(2, 2)
+
+z = np.hstack((x, y))
+print(z)
+
+# w = np.vstack((x, y))
+# print(w)
+
+w = np.concatenate((x, y), axis=1)
+print("Concatenate")
+print(w)
+z = np.hstack((x, y))
+print("hstack")
+print(z)
+print(z == w)
+
+# Depth Stacking
+x = np.arange(4).reshape(2, 2)
+y = x * 2
+depth_stack = np.dstack((x, y))
+print(depth_stack)
+print(depth_stack.shape)
+
+x = np.arange(4)
+y = np.arange(4, 8)
+
+print(np.column_stack((x, y)))
+print(np.row_stack((x, y)))
+
+
+
+
+
+
+
+
 
 
 
