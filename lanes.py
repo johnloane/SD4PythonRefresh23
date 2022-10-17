@@ -75,16 +75,19 @@ def make_coordinates(image, line_parameters):
 cap = cv2.VideoCapture("IMG_2094.mp4")
 while(cap.isOpened()):
     _, frame = cap.read()
-    frame = cv2.resize(frame, (960, 1280))
-    lane_image = np.copy(frame)
-    canny_image = canny(lane_image)
-    cropped_image = region_of_interest(canny_image)
-    lines = cv2.HoughLinesP(cropped_image, 2, np.pi/180, 100, np.array([]), minLineLength=40, maxLineGap=100)
-    averaged_lines = average_slope_intercept(lane_image, lines)
-    line_image = display_lines(lane_image, averaged_lines)
-    combo_image = cv2.addWeighted(lane_image, 0.8, line_image, 1, 1)
-    cv2.imshow("Window name", combo_image)
-    if cv2.waitKey(1) == ord('q'):
+    if frame is not None:
+        frame = cv2.resize(frame, (960, 1280))
+        lane_image = np.copy(frame)
+        canny_image = canny(lane_image)
+        cropped_image = region_of_interest(canny_image)
+        lines = cv2.HoughLinesP(cropped_image, 2, np.pi/180, 100, np.array([]), minLineLength=40, maxLineGap=100)
+        averaged_lines = average_slope_intercept(lane_image, lines)
+        line_image = display_lines(lane_image, averaged_lines)
+        combo_image = cv2.addWeighted(lane_image, 0.8, line_image, 1, 1)
+        cv2.imshow("Window name", combo_image)
+        if cv2.waitKey(1) == ord('q'):
+            break
+    else:
         break
 cap.release()
 cv2.destroyAllWindows()
