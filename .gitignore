@@ -5,6 +5,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+test.p
+train.p
+valid.p
+
 # C extensions
 *.so
 
