@@ -59,7 +59,6 @@ def modified_model():
     model.add(Conv2D(30, (3, 3), activation='relu'))
     model.add(Conv2D(30, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.5))
     model.add(Flatten())
     model.add(Dense(500, activation='relu'))
     model.add(Dropout(0.5))
@@ -138,6 +137,17 @@ X_train = X_train.reshape(34799, 32, 32, 1)
 X_val = X_val.reshape(4410, 32, 32, 1)
 X_test = X_test.reshape(12630, 32, 32, 1)
 
+datagen = ImageDataGenerator(width_shift_range=0.1, height_shift_range=0.1, zoom_range=0.2, shear_range=0.1, rotation_range=10)
+datagen.fit(X_train)
+
+# batches = datagen.flow(X_train, y_train, batch_size=20)
+# X_batch, y_batch = next(batches)
+# fig, axs = plt.subplots(1, 20, figsize=(20,5))
+# for i in range(20):
+#     axs[i].imshow(X_batch[i].reshape(32, 32))
+#     axs[i].axis("off")
+# plt.show()
+
 
 # One hot encode all labels
 y_train = to_categorical(y_train, num_classes)
@@ -148,7 +158,7 @@ model = modified_model()
 print(model.summary())
 
 # Train the model and evaluate its performance
-h = model.fit(X_train, y_train, epochs=10, validation_data=(X_val, y_val), batch_size=400, verbose=1, shuffle=1)
+h = model.fit(datagen.flow(X_train, y_train, batch_size=50), steps_per_epoch=X_train.shape[0]/50, epochs=20, validation_data=(X_val, y_val),  verbose=1, shuffle=1)
 plt.plot(h.history['accuracy'])
 plt.plot(h.history['val_accuracy'])
 plt.title('Accuracy')
@@ -158,3 +168,15 @@ plt.show()
 score = model.evaluate(X_test, y_test, verbose=1)
 print('Test score: ', score[0])
 print('Test accuracy: ', score[1])
+
+url = 'https://c8.alamy.com/comp/G667Wo/road-sign-speed-limit-30-kmh-zone-passau-bavaria-germany-G667W0.jpg'
+r = requests.get(url, stream=True)
+img = Image.open(r.raw)
+plt.imshow(img, cmap=plt.get_cmap('gray'))
+plt.show()
+
+img = np.asarray(img)
+img = cv2.resize(img, (32, 32))
+img = preprocess(img)
+img = img.reshape(1, 32, 32, 1)
+print("Predicted sign: " + str(np.argmax(model.predict(img), axis=1)))
